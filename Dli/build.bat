@@ -1,0 +1,1 @@
+for %%i in (*.dpr) do dcc32.exe  -d %%i -U"$(DELPHI)\Lib;$(DELPHI)\Bin;$(DELPHI)\Imports;$(DELPHI)\Projects\Bpl;$(DELPHI)\Rave5\Lib;C:\Program Files\Borland\Delphi7\Components\EhLib\Lib;C:\Program Files\Devart\UniDAC for Delphi 7\Lib;C:\Program Files\Devart\UniDAC for Delphi 7\Bin;C:\mxOutlookBar;C:\app\FastReport6914\LibD7;C:\app\KImage"  -Edll

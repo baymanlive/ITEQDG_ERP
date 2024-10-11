@@ -1,0 +1,31 @@
+
+POST https://192.168.4.14/api/pda/login HTTP/1.1
+Content-Type: application/json
+
+{
+      "Bu": "ITEQDG",
+      "UserId": "admin",
+      "Password": "1241"
+}
+
+
+###
+POST http://192.168.4.14:5000/api/pda/dli640 HTTP/1.1
+Content-Type: application/json
+
+{"Bu":"ITEQDG","userId":"admin","Pno":"T5003011370490BiR","Wono":"51T-340376","Lot":"J3413A28E1","kind":"ccljyz"}
+
+###
+GET http://192.168.4.14:8080/PasreOAO06.ashx?wono=513-280038&bar_bu=JX
+
+
+###
+POST http://192.168.4.14:5000/api/pda/pda_version
+
+
+###
+GET http://10.2.20.68:4123/?abc=aaaaaa
+
+
+###
+POST http://127.0.0.1:4444/?wono=513-280038&bar_bu=JX
