@@ -466,7 +466,7 @@ begin
   if Pos(tmpCustno, 'AC093,AC082,AC178,AC152') > 0 then
     result := CDS2.FieldByName('c_pno').AsString + ' ' + Result;
 
-  if (Pos(tmpCustno, 'AC136/ACA27') > 0) then   
+  if (Pos(tmpCustno, 'AC136/ACA27/AC552') > 0) then   
     result := result + ' ' + CDS2.FieldByName('fstlot').AsString
   else if (Pos(tmpCustno, 'AC198') > 0) then
     result := result + ' ' + CDS3.FieldByName('lot1').AsString;

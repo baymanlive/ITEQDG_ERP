@@ -2035,7 +2035,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
       FCDS.FieldByName('G_unit').AsString := 'N/mm'
     else if isHY and (SMRec.M2 = '8') then
       FCDS.FieldByName('G_unit').AsString := 'KG/CM'
-    else if isLCA and (Pos(SMRec.Custno, 'AC143/AC097') > 0) then
+    else if {isLCA and} (Pos(SMRec.Custno, 'AC143/AC097') > 0) then
       FCDS.FieldByName('G_unit').AsString := 'lb/in'
     else if (Pos(SMRec.Custno, 'AC143/AC097') > 0) and (Pos(SMRec.M2, '1/6/F') > 0) then
       FCDS.FieldByName('G_unit').AsString := 'N/mm'
