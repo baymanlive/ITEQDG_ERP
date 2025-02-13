@@ -276,6 +276,11 @@ begin    //JX-222-332389-1-AC121
     tmpCDS.FieldByName('Custshort').AsString := custInfo.Name;
     tmpCDS.FieldByName('Custprono').AsString := custpno;
     tmpCDS.FieldByName('Pname').AsString := custpname;
+    if custno= 'AC108' then
+    begin
+      tmpCDS.FieldByName('Custorderno').AsString := custpo;
+      tmpCDS.FieldByName('Custname').AsString := custpname;
+    end;
     tmpCDS.post;
     l_DLII040_rpt.FSourceCDS := tmpCDS;
     l_DLII040_rpt.StartPrint(g_MInfo^.ProcId,cds3);//, CDS3.fieldbyname('qrcode').asstring);
@@ -488,13 +493,13 @@ begin
 end;
 
 procedure TFrmDLII040.ToolButton1Click(Sender: TObject);
-var sql:string;  data:OleVariant;
+//var sql:string;  data:OleVariant;
 begin
   inherited;
-  if MB_OK = ShowMsg('是否終端客戶資料?', 35) then
+//  if MB_OK = ShowMsg('是否刷新終端客戶資料?', 35) then
   begin
-    sql := 'exec proc_refresh_n024 select 1';
-    QueryOneCR(sql, data);
+//    sql := ;// select 1';
+    PostBySQL('exec proc_refresh_n024');
   end;
 end;
 

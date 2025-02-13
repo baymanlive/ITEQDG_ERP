@@ -34,15 +34,18 @@ type
     Edit5: TEdit;
     Edit6: TEdit;
     Panel2: TPanel;
+    edtStealSum: TEdit;
     procedure RG1Click(Sender: TObject);
     procedure DBGridEh1GetCellParams(Sender: TObject; Column: TColumnEh; AFont: TFont; var Background: TColor; State: TGridDrawState);
     procedure CDSAfterScroll(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btn_exportClick(Sender: TObject);
   private
     l_CDS670: TClientDataSet;
     l_ColorList: TStrings;
     procedure GetSumQty;
+    procedure GetTotalSteal;
     procedure RefreshColor;
     procedure RefreshData(xRG: TRadioGroup; xCDS: TClientDataSet);
     procedure SetEdit3;
@@ -61,6 +64,8 @@ implementation
 
 uses
   unGlobal, unCommon;
+var
+    stealcount:integer;
 
 {$R *.dfm}
 
@@ -76,6 +81,7 @@ begin
       Filter := 'Machine=' + Quotedstr(xRG.Items[xRG.ItemIndex]);
     Filtered := True;
   end;
+//  GetTotalSteal;
 end;
 
 procedure TFrmMPSR030.SetEdit3;
@@ -193,17 +199,27 @@ var
   tmpSQL, tmpSQL2, tmpSQL3: string;
   Data: OleVariant;
 begin
-
+   stealcount:=0;
   g_ProgressBar.Visible := True;
   g_ProgressBar.Position := 20;
   g_ProgressBar.Max := 100;
 
   Application.ProcessMessages;
 
-  tmpSQL3 := 'select sfb01,sfb09 from openquery(' + g_UInfo^.BU + ',' + Quotedstr('select sfb01,sfb09 from sfb_file where (sfb25>=add_months(sysdate,-6)) and sfb04 in (''6'',''7'',''8'')') + ')';
+  tmpSQL3 := 'select sfb01,sfb09 from openquery(' + g_UInfo^.BU + ',' +
+              Quotedstr('select sfb01,sfb09 from sfb_file where (sfb25>=add_months(sysdate,-6)) and sfb04 in (''6'',''7'',''8'')') + ')';
 
-  tmpSQL2 := 'select custno2,custname2,machine,sdate,currentboiler,wono,orderdate,orderno,orderitem,' + ' materialno,sqty,adate_new,custno,custom,custom2,stealno,premark,premark2,premark3,' + ' orderqty,orderno2,orderitem2,materialno1,pnlsize1,pnlsize2,edate,adhesive,thickness,' + ' copper,supplier,sizes,oz,simuver,citem,jitem,errorflag,remain_ordqty,struct' + ' from mps010 where bu=' + Quotedstr(g_UInfo^.BU) + ' and case_ans2=1 and isnull(errorflag,0)=0 ' + strFilter + ' union all' +
-    ' select ''''custno2,''''custname2,machine,sdate,currentboiler,wono,orderdate,orderno,orderitem,' + ' materialno,sqty,adate_new,custno,custom,custom2,stealno,premark,premark2,' + Quotedstr('') + ' as premark3,' + ' orderqty,orderno2,orderitem2,materialno1,pnlsize1,pnlsize2,edate,adhesive,thickness,' + ' copper,supplier,sizes,oz,simuver,citem,jitem,errorflag,remain_ordqty,struct' + ' from MPS010_20160409 where bu=' + Quotedstr(g_UInfo^.BU) + ' and sdate>=getdate()-60' + ' and case_ans2=1 and isnull(errorflag,0)=0 ' + strFilter;
+  tmpSQL2 := 'select custno2,custname2,machine,sdate,currentboiler,wono,orderdate,orderno,orderitem,' +
+             ' materialno,sqty,adate_new,custno,custom,custom2,stealno,premark,premark2,premark3,' +
+             ' orderqty,orderno2,orderitem2,materialno1,pnlsize1,pnlsize2,edate,adhesive,thickness,' +
+             ' copper,supplier,sizes,oz,simuver,citem,jitem,errorflag,remain_ordqty,struct' +
+             ' from mps010 where bu=' + Quotedstr(g_UInfo^.BU) + ' and case_ans2=1 and isnull(errorflag,0)=0 ' + strFilter + ' union all' +
+             ' select ''''custno2,''''custname2,machine,sdate,currentboiler,wono,orderdate,orderno,orderitem,' +
+             ' materialno,sqty,adate_new,custno,custom,custom2,stealno,premark,premark2,' + Quotedstr('') + ' as premark3,' +
+             ' orderqty,orderno2,orderitem2,materialno1,pnlsize1,pnlsize2,edate,adhesive,thickness,' +
+             ' copper,supplier,sizes,oz,simuver,citem,jitem,errorflag,remain_ordqty,struct' +
+             ' from MPS010_20160409 where bu=' + Quotedstr(g_UInfo^.BU) +
+             ' and sdate>=getdate()-60' + ' and case_ans2=1 and isnull(errorflag,0)=0 ' + strFilter;
 
   tmpSQL := 'select aaa.*,bbb.sfb09 from (' + tmpSQL2 + ')aaa left join (' + tmpSQL3 + ')bbb on aaa.wono=bbb.sfb01';
 
@@ -244,7 +260,7 @@ begin
 
   DBGridEh1.FieldColumns['sfb09'].Title.Caption := CheckLang('入庫數量');
 
-  Label3.Caption := CheckLang('生產日期/鍋次');
+  Label3.Caption := CheckLang('生產日期/鍋次');///總鍋數');
   Label4.Caption := CheckLang('數量');
   l_ColorList := TStringList.Create;
   GetMPSMachine;
@@ -305,6 +321,48 @@ begin
       Background := l_Color2
     else
       Background := l_Color1;
+    Inc(stealcount);
+  end;
+end;
+
+procedure TFrmMPSR030.btn_exportClick(Sender: TObject);
+begin
+//  inherited;
+  GetExportXls(CDS, 'MPSR030');
+end;
+
+procedure TFrmMPSR030.GetTotalSteal;
+var
+  tmpSQL, tmpMachine, S9_11,tmpStealno: string;
+  tmpSdate: TDateTime;
+  Qty,tmpCurrentBoiler: Integer;
+   tmpSqty: Double;
+  tmpCDS: TClientDataSet;
+  Data: OleVariant;
+begin
+  edtStealSum.Text := '0';
+  if (not CDS.Active) or CDS.IsEmpty then
+    Exit;
+
+  Qty := 0;
+  tmpStealno:='';
+  CDS.DisableControls;
+  try
+    CDS.First;
+    while not CDS.Eof do
+    begin
+      if (tmpStealno<>CDS.FieldByName('Stealno').AsString) or (tmpSdate <> CDS.FieldByName('Sdate').AsDateTime) then
+      begin
+        inc(Qty);
+        tmpStealno := CDS.FieldByName('Stealno').AsString;
+        tmpSdate := CDS.FieldByName('Sdate').AsDateTime;
+      end;
+      CDS.Next;
+    end;
+    edtStealSum.Text := FloatToStr(Qty);
+  finally
+    CDS.First;
+    CDS.EnableControls;
   end;
 end;
 

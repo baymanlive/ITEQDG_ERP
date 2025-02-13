@@ -783,12 +783,12 @@ begin
     FCDS.FieldByName('C_Orderno').AsString := GetC_Orderno(tmpCDS.FieldByName('oea04').AsString, tmpSQL, tmpCDS.FieldByName
       ('oao06').AsString);
     FCDS.FieldByName('C_Pno').AsString := tmpCDS.FieldByName('oeb11').AsString;
-    if copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'JX-' then
+    if (copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'JX-') OR (copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'WX-') then
     begin
       GetJxTA_oeb10(tmpCDS.FieldByName('oao06').AsString, FCDS.FieldByName('C_Sizes'));
       FCDS.FieldByName('C_Pno').AsString := FSourceCDS.FieldByName('Custprono').AsString;
-      //20240510
-      if (ds3 <> nil) and (pos(SMRec.Custno, 'AC434/AC365/ACD39/AC388/AC111,AC082,AC108,ACF29') > 0) then
+      //20240510                         
+      if (ds3 <> nil) and (pos(SMRec.Custno,g_fz+ ',AC111,AC082,AC108,') > 0) then    //',AC111,AC082,AC108,'
       begin
         flag := false;
         ds3.first;
@@ -1152,8 +1152,8 @@ begin
     end
     else
     begin
-      //AC084、AC148、AC347布基重
-      if Pos(SMRec.Custno, 'AC084/AC148/AC347/N023/AC360/AC950/AC075/AC310/AC311/AC405/AC109/AC172/AC136/ACA27') > 0 then
+      //AC084、AC148、AC347布基重  
+      if Pos(SMRec.Custno,g_fz+ '/AC084/AC148/AC347/N023/AC360/AC950/AC075/AC310/AC311/AC405/AC109/AC172/AC136/ACA27/') > 0 then
       begin
         Data := null;
         tmpSQL := 'Select Top 1 fValue,dValue,n023 From Dli370' + ' Where Bu=' + Quotedstr(g_UInfo^.BU) + ' And Fiber='
@@ -1386,8 +1386,8 @@ begin
       FCDS.FieldByName('Resin_visible').AsString := '0';
 
     //玻布
-    if isHY or isCY or (Pos(SMRec.M2, 'XYZ') > 0) or (Pos(SMRec.Custno,
-      'AC117/ACC19/AC093/AM010/AC388/N013/N006/AC148/AC347/AC096/AC174/AC082/N023/N024/AC365/AC434/AC114/AC388/AC436/AC769/ACC39')
+    if isHY or isCY or (Pos(SMRec.M2, 'XYZ') > 0) or (Pos(SMRec.Custno,        
+      g_fz+'/AC117/ACC19/AC093/AM010/N013/N006/AC148/AC347/AC096/AC174/AC082/N023/N024/AC436/AC769/ACC39')
       > 0) or (SameText(SMRec.Custno, 'AC111') and (Pos(SMRec.M2, '6/F/4/8/A/U') > 0)) or (SameText(SMRec.Custno,
       'AC109') and (Pos(SMRec.M2, '5/6/F/J/H/U') > 0)) or (SameText(SMRec.Custno, 'AC109') and (Pos(SMRec.M2 + SMRec.M18,
       'U3,UZ,Uz,UI,Ui') > 0)) or (SameText(SMRec.Custno, 'AC178') and (Pos(SMRec.M4_7,
@@ -1532,6 +1532,12 @@ begin
                   ')'
               else
                 FCDSLot.FieldByName('lot').AsString := tmpStr;
+
+              if leftstr(tmpStr, 1) = 'J' then
+              begin
+                FCDS.Edit;
+                FCDS.FieldByName('TestName').AsString := '彭淑蘭';
+              end;
 
               //批號
               if SMRec.Custno='AC198' then
@@ -1844,7 +1850,7 @@ begin
       FCDS.Post;
     end;
 
-    if (Pos(SMRec.Custno, 'AC365/AC388/AC434/ACD39/ACF29') > 0) and
+    if isfz(SMRec.Custno) and
        (Pos('能源板',FCDS.FieldByName('C_Sizes').AsString) >0) and
        ((copy(FCDS.FieldByName('Pno').AsString,2,1) <> 'Q') or
        (copy(FCDS.FieldByName('Pno').AsString,length(FCDS.FieldByName('Pno').AsString),1) <> 'R'))
@@ -1935,8 +1941,8 @@ begin
     tmpSQL := 'Other-COCo'
   else if SameText(SMRec.Custno, 'AH017') or (SameText(SMRec.Custno, 'AC174') and (SMRec.M2 = '4')) or (SameText(SMRec.Custno,
     'AC096') and (SMRec.M2 = '4')) then           //臺灣格式
-    tmpSQL := 'Other-COC4'
-  else if (Pos(SMRec.Custno, 'AC347/AC148/AC111/AC072/AC360/AC109/AC136/ACA27') > 0) then                  //加布基重項目格式
+    tmpSQL := 'Other-COC4'         
+  else if (Pos(SMRec.Custno, g_fz+'/AC347/AC148/AC111/AC072/AC360/AC109/AC136/ACA27') > 0) then                  //加布基重項目格式
     tmpSQL := 'Other-COC5'
   else if (Pos(SMRec.Custno, 'N023') > 0) then                               //臺灣格式:布基重+膠片類型
     tmpSQL := 'Other-COCe'
@@ -2049,13 +2055,15 @@ begin           //OAO06 SAMPLE:JX-223-220061-6-ACC58
     end;
     tmpSql :=
       'select ta_oeb10,oea10,ta_oeb28 from iteqjx.oeb_file join iteqjx.oea_file on oea01=oeb01 where oeb01=%s and oeb03=%s';
+    if ls[0]='WX' then
+      tmpsql:=stringreplace(tmpsql,'iteqjx.','iteqwx.',[rfReplaceAll]);
     tmpSql := Format(tmpSql, [quotedstr(ls[1] + '-' + ls[2]), ls[3]]);
     result := QueryBySQL(tmpSql, data, 'ORACLE');
     if result then
     begin
       tmpCDS.data := data;
       ta_oeb10.asstring := tmpCDS.Fields[0].asstring;
-      if pos(ls[4], 'AC114/AC365/AC388/AC434/ACD39') > 0 then
+      if IsFz(ls[4]) then
         ta_oeb10.DataSet.FieldByName('C_Orderno').asstring := tmpCDS.Fields[2].asstring
       else
         ta_oeb10.DataSet.FieldByName('C_Orderno').asstring := tmpCDS.Fields[1].asstring;

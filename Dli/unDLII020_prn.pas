@@ -19,6 +19,7 @@ uses
 const
   l_diff = 0.000001;
 
+
 type
   TDLII020_prn = class
   private
@@ -38,6 +39,7 @@ type
     function SendJson(json,sno: string): string;
     function CD_QRCode:boolean;
     function GetACF13Dno(dno: string): string;
+    procedure Sp222_4C2008(oga01:string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -52,6 +54,7 @@ uses
 var
   l_selfPP: boolean; //自用pp
   test:boolean=false;
+  l_tmpFlag:boolean = FALSE;  //無COC批號列印
 
 constructor TDLII020_prn.Create;
 begin
@@ -333,6 +336,7 @@ begin
     ShowMsg('請輸入銷貨單號!', 48);
     Exit;
   end;
+  Sp222_4C2008(copy(Saleno,1,10));
   JxRemark(Remark,custInfo);
   isCD := False; //(Pos(custno,'AC121/AC820/ACA97/AC109')>0);
 
@@ -340,6 +344,9 @@ begin
   tmpCDS := TClientDataSet.Create(nil);
   tmpCDS2 := TClientDataSet.Create(nil);
   Ima_CDS := TClientDataSet.Create(nil);
+
+
+
   try
     tmpList.DelimitedText := Saleno;
     isMore := tmpList.Count > 1;
@@ -364,6 +371,7 @@ begin
       if not QueryBySQL(tmpSQL, Data, FOraDB) then
         Exit;
       tmpCDS.Data := Data;
+
       for i := 0 to tmpList.Count - 1 do
         if not tmpCDS.Locate('oga01', tmpList.Strings[i], []) then
         begin
@@ -799,8 +807,8 @@ begin
     Data := null;   {(*}
     l_selfPP:=(Copy(FPrnCDS2.FieldByName('pno').AsString,1,1)<>'P') and
        (Copy(FPrnCDS2.FieldByName('pno').AsString,1,1)<>'Q');
-    if (pos(FPrnCDS1.FieldByName('Custno').AsString, 'ACA00/N024/AC178/AC152/AH036') > 0) and
-       l_selfPP then   {*)}
+    if (pos(FPrnCDS1.FieldByName('Custno').AsString, 'ACA00/AC178/AC152/AH036/N024/N006') > 0) and
+       l_selfPP and (not l_tmpFlag) then   {*)}
     begin
       if not GetCOCLot(Saleno, Data) then
         exit;
@@ -816,14 +824,20 @@ begin
       for i := 0 to tmpList.Count - 1 do
         if not tmpCDS.Locate('ogb01', tmpList.Strings[0], []) then
         begin
+          if not l_tmpFlag then
+          begin
           ShowMsg(tmpList.Strings[0] + '批號檔無資料!', 48);
           Exit;
+          end;
         end;
     end
     else if tmpCDS.IsEmpty then
     begin
+      if not l_tmpFlag then
+          begin
       ShowMsg('批號檔無資料!', 48);
       Exit;
+      end;
     end;
 
     FPrnCDS2.First;
@@ -842,7 +856,7 @@ begin
 
           if isWS or (Pos(FPrnCDS1.FieldByName('Custno').AsString, g_strMW) > 0) or (Pos(FPrnCDS1.FieldByName('Custno').AsString,
             'AC152,AH036') > 0) or SameText('ACA00', FPrnCDS1.FieldByName('Custno').AsString) or SameText('N024', FPrnCDS1.FieldByName
-            ('Custno').AsString) or (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'N012,N005') > 0) then
+            ('Custno').AsString) or (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'N012,N005,N006') > 0) then
           begin
             //            if (Pos('AC117',FPrnCDS2.FieldByName('Remark').AsString) > 0) or (Pos('ACC19',FPrnCDS2.FieldByName('Remark').AsString) > 0) then
 
@@ -973,7 +987,7 @@ begin
 
     //明陽、九江明陽:顯示生產日期
     {(*}
-    if (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'AC133,ACA28,ACE06,ACA00,N024') > 0) and
+    if (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'AC133,ACA28,ACE06,ACA00,N024,N006') > 0) and
        l_selfPP then   {*)}
     begin
       //COC批號
@@ -992,8 +1006,11 @@ begin
       end
       else if tmpCDS.IsEmpty then
       begin
-        ShowMsg('COC批號檔無資料!', 48);
-        Exit;
+        if not l_tmpFlag then
+        begin
+          ShowMsg('COC批號檔無資料!', 48);
+          Exit;
+        end;
       end;
 
       FPrnCDS2.First;
@@ -1068,20 +1085,20 @@ begin
 //      end;
 //    end;
 
-    //一個批號一行
-    if (Pos(FPrnCDS1.fieldbyname('Custno').AsString, g_strMY) > 0) then
-    begin
-      FPrnCDS3.EmptyDataSet;
-      with FPrnCDS2 do
-      begin
-        First;
-        while not Eof do
-        begin
-          if Pos(' ', FieldByName('Lot').AsString) = 0 then
-            next;
-        end;
-      end;
-    end;
+    //一個批號一行     ???
+//    if (Pos(FPrnCDS1.fieldbyname('Custno').AsString, g_strMY) > 0) then
+//    begin
+//      FPrnCDS3.EmptyDataSet;
+//      with FPrnCDS2 do
+//      begin
+//        First;
+//        while not Eof do
+//        begin
+//          if Pos(' ', FieldByName('Lot').AsString) = 0 then
+//            next;
+//        end;
+//      end;
+//    end;
 
     //一個批號一行
     if (Pos(FPrnCDS1.fieldbyname('Custno').AsString, g_strMY) > 0) then
@@ -1209,7 +1226,7 @@ begin
   if isPrnLot and (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'N012,N005') > 0) and (Pos(LeftStr(FPrnCDS2.FieldByName('Pno').AsString,
     1), 'PQ') = 0) then
     isPrnLot := False;
-  if (LeftStr(g_UInfo^.UserId,2)='IG') and (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'N024') > 0) and (Pos(LeftStr(FPrnCDS2.FieldByName('Pno').AsString,
+  if (LeftStr(g_UInfo^.UserId,2)='IG') and (Pos(FPrnCDS1.FieldByName('Custno').AsString, 'N024,N006') > 0) and (Pos(LeftStr(FPrnCDS2.FieldByName('Pno').AsString,
     1), 'PQ') > 0) then
     isPrnLot := False;
 
@@ -1297,7 +1314,7 @@ end;
 
 function TDLII020_prn.MY_QRCodeStr(lot, qty, kg: string): string;
 var
-PrdDate2, LstDate2, plant: string;
+PrdDate2, LstDate2, plant,remark: string;
 begin
   if trim(FPrnCDS2.FieldByName('Remark').AsString) = '' then
   begin
@@ -1318,8 +1335,12 @@ begin
       else if FieldByName('Custno').AsString = 'ACE06' then
         plant := '03,';   
      {(*}
+      if FieldByName('Custno').AsString = 'AC133' then
+        remark:=COPY(FPrnCDS2.FieldByName('Remark').AsString,1,15)
+      else
+        remark:=FPrnCDS2.FieldByName('Remark').AsString;
       result := plant + FieldByName('Saleno').AsString+','+
-                FPrnCDS2.FieldByName('Remark').AsString+','+
+                remark+','+
                 lot+','+
                 qty+','+
                 kg+','+
@@ -1382,6 +1403,28 @@ begin
       ShowMsg(ex.message);
       result:=false;
     end;
+  end;
+end;
+
+procedure TDLII020_prn.Sp222_4C2008(oga01:string);
+//222-4C2008   222-4C2009   222-4C2025   生益銷退，退江西，簽呈見附件
+var
+  tmpSQL,oga16: string;
+  Data: OleVariant;
+  tmpCDS: TClientDataSet;
+begin
+  l_tmpFlag:=false;
+  tmpSql:= 'select oga16 from oga_file where oga01='+QuotedStr(oga01);
+  tmpCDS := TClientDataSet.Create(nil);
+  try
+    if QueryBySQL(tmpSQL, Data, FOraDB) then
+    begin
+      tmpCDS.Data := Data;
+      oga16 := tmpCDS.Fields[0].AsString;
+      l_tmpFlag:= Pos(oga16,'222-4C2008   222-4C2009   222-4C2025')>0;
+    end;
+  finally
+    FreeAndNil(tmpCDS);
   end;
 end;
 

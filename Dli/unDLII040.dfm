@@ -1,13 +1,12 @@
 inherited FrmDLII040: TFrmDLII040
-  Left = 491
-  Top = 248
+  Top = 197
   Caption = 'FrmDLII040'
-  ClientHeight = 618
-  ClientWidth = 1208
+  ClientHeight = 563
+  ClientWidth = 959
   PixelsPerInch = 96
   TextHeight = 13
   inherited ToolBar: TToolBar
-    Width = 1208
+    Width = 959
     object btn_delete: TToolButton
       Left = 364
       Top = 0
@@ -26,17 +25,17 @@ inherited FrmDLII040: TFrmDLII040
     end
   end
   inherited PnlBottom: TPanel
-    Top = 368
-    Width = 1208
+    Top = 313
+    Width = 959
     TabOrder = 3
   end
   inherited Panel1: TPanel
-    Width = 1208
+    Width = 959
     TabOrder = 4
   end
   inherited DBGridEh1: TDBGridEh
-    Width = 1208
-    Height = 324
+    Width = 959
+    Height = 269
     TabOrder = 1
     OnCellClick = DBGridEh1CellClick
     OnDblClick = DBGridEh1DblClick
@@ -292,8 +291,8 @@ inherited FrmDLII040: TFrmDLII040
   end
   object PCL2: TPageControl [4]
     Left = 0
-    Top = 398
-    Width = 1208
+    Top = 343
+    Width = 959
     Height = 220
     ActivePage = TabSheet2
     Align = alBottom
@@ -302,12 +301,12 @@ inherited FrmDLII040: TFrmDLII040
       Caption = #25209#34399#36039#26009
       ImageIndex = 1
       DesignSize = (
-        1200
+        951
         192)
       object DBGridEh2: TDBGridEh
         Left = 4
         Top = 4
-        Width = 1529
+        Width = 1280
         Height = 183
         Anchors = [akLeft, akTop, akRight, akBottom]
         DataSource = DS2
@@ -349,12 +348,12 @@ inherited FrmDLII040: TFrmDLII040
       Caption = #20108#32173#30908#36039#26009
       ImageIndex = 1
       DesignSize = (
-        1200
+        951
         192)
       object DBGridEh3: TDBGridEh
         Left = 4
         Top = 4
-        Width = 1529
+        Width = 1280
         Height = 183
         Anchors = [akLeft, akTop, akRight, akBottom]
         DataSource = DS3

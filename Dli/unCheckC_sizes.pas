@@ -55,7 +55,7 @@ begin
   Data:=null;
   tmpSQL:='Select CodeId,Custno,Code,LstCode,StdValue,StdValueNo,StdValueOne'
          +' From Dli620 Where Bu='+Quotedstr(g_UInfo^.BU)
-         +' And CodeId in (0,1,2,3)'
+         +' And CodeId in (0,1,2,3,8)'
          +' Order By CodeId,Custno Desc,Code Desc,LstCode Desc'; //0排在後面
   if QueryBySQL(tmpSQL, Data) then
      FCDSDli620_ccl.Data:=Data;
@@ -396,6 +396,7 @@ begin
         Exit;
       end;
     end;
+
 
   finally
     FreeAndNil(tmpList);

@@ -777,7 +777,7 @@ begin
       tmpCDS1.FieldByName('Materialno').AsString:=tmpCDS2.FieldByName('Materialno').AsString;
       if not tmpCDS2.FieldByName('Adate').IsNull then
       begin
-        if Pos(CDS.FieldByName('oea04').AsString, 'AC114,AC365,AC388,AC434,AC625,ACB00,AC117,ACC19')>0 then
+        if Pos(CDS.FieldByName('oea04').AsString, 'AC114,ACG16,AC365,AC388,AC434,AC625,ACB00,AC117,ACC19')>0 then
            tmpCDS1.FieldByName('Adate').AsDateTime:=tmpCDS2.FieldByName('Adate').AsDateTime
         else
            tmpCDS1.FieldByName('Adate').AsDateTime:=tmpCDS2.FieldByName('Adate').AsDateTime-1;

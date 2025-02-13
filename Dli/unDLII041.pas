@@ -282,7 +282,7 @@ begin    //JX-222-332389-1-AC121
     custpname:=custInfo.PartName;
     custpo:=custInfo.Po;
   {(*}
-  if (Pos(custno, 'AC365/AC388/AC434/ACD39/ACF29') > 0) and
+  if isfz(custno) and
      (Pos('¯à·½ªO',CDS.FieldByName('Custprono').AsString) >0) and
      ((copy(CDS.FieldByName('pno').AsString,2,1) <> 'Q') or
      (copy(CDS.FieldByName('pno').AsString,length(CDS.FieldByName('pno').AsString)-1,1) <> 'R'))
@@ -308,6 +308,11 @@ begin    //JX-222-332389-1-AC121
     tmpCDS.FieldByName('custno').AsString := custno;
     tmpCDS.FieldByName('Custprono').AsString := custpno;
     tmpCDS.FieldByName('Pname').AsString := custpname;
+    if custno= 'AC108' then
+    begin
+      tmpCDS.FieldByName('Custorderno').AsString := custpo;
+      tmpCDS.FieldByName('Custname').AsString := custpname;
+    end;
     tmpCDS.post;
     l_DLII041_rpt.FSourceCDS := tmpCDS;
     l_DLII041_rpt.StartPrint(g_MInfo^.ProcId, CDS3.fieldbyname('qrcode').asstring,cds3);

@@ -60,6 +60,31 @@ type
 end;
 
 type
+  PUserInfo2 = ^ TUserInfo2;
+  TUserInfo2 = Packed Record      //用戶記錄
+    BU,                          //廠別
+    ShortName,                   //簡稱
+    Cname,                       //中文名稱
+    UserId,                      //帳號
+    UserName,                    //姓名
+    Depart,                      //部門
+    Room,                        //課室
+    Title,                       //職務
+    Wk_no,                       //工號
+    SysPath,                     //系統路徑
+    TempPath,                    //OS臨時文件路徑
+    LocalComputerName,           //Local ComputerName
+    LocalIP,                     //Local IP
+    Host,                        //Rdm IP
+    ServerName,                  //Rdm 名稱
+    ClientID,                    //Rdm返回給客戶端ID
+    DBType          :String[100];     //默認資料庫
+    Port            :Integer;    //Rdm端口號
+    isCN,                        //系統語言
+    isWideString    :Boolean;    //SQL使用雙字節
+end;
+
+type
   PMenuInfo = ^ TMenuInfo;
   TMenuInfo =  Packed Record     //作業記錄
     PId,                         //上級Id
@@ -68,6 +93,32 @@ type
     ProcName,                    //菜單名稱
     DllPath,                     //Dll路徑
     Actions     : String;        //顯示按扭
+    SnoAsc      : Integer;       //菜單位置
+    IsExe,                       //此程式是可執行文件exe
+    IsPop,                       //原作業模式:彈出作業
+    R_visible,                   //顯示
+    R_new,                       //新建
+    R_edit,                      //更改
+    R_delete,                    //刪除
+    R_copy,                      //複製
+    R_garbage,                   //作癈
+    R_conf,                      //確認
+    R_check,                     //審核
+    R_query,                     //查詢
+    R_print,                     //列印
+    R_export,                    //導出Excel
+    R_rptDesign : Boolean;       //報表設計
+end;
+
+type
+  PMenuInfo2 = ^ TMenuInfo2;
+  TMenuInfo2 =  Packed Record     //作業記錄
+    PId,                         //上級Id
+    NId         : Integer;       //Id
+    ProcId,                      //菜單編號
+    ProcName,                    //菜單名稱
+    DllPath,                     //Dll路徑
+    Actions     : String[100];        //顯示按扭
     SnoAsc      : Integer;       //菜單位置
     IsExe,                       //此程式是可執行文件exe
     IsPop,                       //原作業模式:彈出作業
@@ -235,6 +286,7 @@ const g_DGLastCode='X,N,3,W,K,R,9,Q,H,I,S,1,7,V,Y,Z';  //東莞尾碼
 const g_GZLastCode='G,g,n,z,w,k,r,9,h,s,v,R,F';        //廣州尾碼
 
 const g_CocData=999;
+var g_fz:string;
 
 implementation
 

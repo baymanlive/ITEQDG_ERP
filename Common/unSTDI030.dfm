@@ -1,5 +1,6 @@
 inherited FrmSTDI030: TFrmSTDI030
-  Top = 130
+  Left = 517
+  Top = 219
   BorderStyle = bsNone
   Caption = 'FrmSTDI030'
   ClientHeight = 525

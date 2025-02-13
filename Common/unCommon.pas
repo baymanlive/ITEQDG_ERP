@@ -140,6 +140,10 @@ function GetOea10(const orderno, remark, oea10: string): string;
 
 function GetQRCodeSno(Custno: string; Wdate: TDateTime): Integer;
 
+procedure InitCustGroup;
+
+function IsFz(custno:string):boolean;//  方正集團
+
 function SetQRCodeSno(Custno: string; Wdate: TDateTime; Sno: Integer): Boolean;
 
 function LBLSno(Custno: string): string;
@@ -235,7 +239,6 @@ const
 var
   XLApp, Sheet, Data: OLEVariant;
   i, j: Integer;
-  path: string;
   SaveDialog: TSaveDialog;
 begin
   // Prepare Data
@@ -762,51 +765,7 @@ begin
     end;
   end;
 end;
-//
-//function JxRemark(const Remark: string; var dno: string; var ditem :integer): Boolean;
-//var
-//  ls: Tstringlist;
-//begin              //JX-222-2B0672-3-AC365
-//  result := false;
-//  ls := TStringlist.create;
-//  try
-//    ls.Delimiter := '-';
-//    ls.DelimitedText := Remark;
-//    if ls.Count >= 5 then
-//    begin
-//      if (LeftStr(ls[4], 2) = 'AC') and (Length(ls[4]) = 5) then
-//      begin
-//        dno:= ls[1]+'-'+ls[2];
-//        ditem:=StrToInt(ls[3]);
-//        result := true;
-//      end;
-//    end;
-//  finally
-//    ls.free;
-//  end;
-//end;
-//
-//function JxRemark(const Remark: string; var custno: string): Boolean;
-//var
-//  ls: Tstringlist;
-//begin              //JX-222-2B0672-3-AC365
-//  result := false;
-//  ls := TStringlist.create;
-//  try
-//    ls.Delimiter := '-';
-//    ls.DelimitedText := Remark;
-//    if ls.Count >= 5 then
-//    begin
-//      if (LeftStr(ls[4], 2) = 'AC') and (Length(ls[4]) = 5) then
-//      begin
-//        custno := ls[4];
-//        result := true;
-//      end;
-//    end;
-//  finally
-//    ls.free;
-//  end;
-//end;
+
 
 function JxRemark(const Remark: string;var custInfo:TCustInfo): Boolean;
 var
@@ -828,7 +787,7 @@ begin    //JX-222-332389-1-AC121
     PoItm := -1;
   end;
   
-  if Pos('JX-', Remark) <> 1 then
+  if (Pos('JX-', Remark) <> 1) and (Pos('WX-', Remark) <> 1) then
   begin
     result := false;
     exit;
@@ -859,6 +818,8 @@ begin    //JX-222-332389-1-AC121
   try
     sql := 'select oea04,oeb11,ta_oeb10,occ02,occ18,oea10 from iteqjx.oeb_file,iteqjx.oea_file,iteqjx.occ_file' +
       ' where oea01=oeb01 and oea04=occ01 and oeb01=%s and oeb03=%d';
+    if (Pos('WX-', Remark)=1) then
+      sql:=StringReplace(sql,'iteqjx.','iteqwx.',[rfReplaceAll]);
     sql := Format(sql, [QuotedStr(dno), custInfo.PoItm]);
     if not QueryBySQL(sql, data, 'ORACLE') then
     begin
@@ -1282,11 +1243,11 @@ var
       begin
         for j := 0 to TPageControl(Ctrl.Controls[i]).PageCount - 1 do
         begin
-          tmpFName := LowerCase(TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Name);
-          if tmpCDS.Locate('fName', tmpFName, [loCaseInsensitive]) then
-            TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Caption := tmpCDS.Fields[1].AsString
-          else
-            TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Caption := tmpFName;
+            tmpFName := LowerCase(TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Name);
+            if tmpCDS.Locate('fName', tmpFName, [loCaseInsensitive]) then
+              TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Caption := tmpCDS.Fields[1].AsString;
+//            else
+//              TTabSheet(TPageControl(Ctrl.Controls[i]).Pages[j]).Caption := tmpFName;
         end;
 
         SetCaption(TPageControl(Ctrl.Controls[i]));
@@ -2098,7 +2059,6 @@ end;
 function GetC_Orderno(custno, oea10, oao06: string): string;
 const
   strCY = 'AC405/AC311/AC310/AC075/AC950';
-  strFZ = 'AC114/AC365/AC388/AC434/ACD39/ACF29';
   strCD = 'AC121/AC526/ACA97/AC820/AC305/ACD57/ACG02';
 var
   pos1, pos2: Integer;
@@ -2130,7 +2090,7 @@ begin
       end;
     end;
   end
-  else if Pos(LeftStr(oao06, 5), strFZ) > 0 then
+  else if Pos(LeftStr(oao06, 5),g_fz {strFZ}) > 0 then
   begin
     tmpSQL := 'declare @po varchar(50)' + ' exec [dbo].[proc_GetFZPO] ' + Quotedstr(g_UInfo^.Bu) + ',' + Quotedstr(oao06)
       + ',@po output' + ' select @po as po';
@@ -2138,7 +2098,7 @@ begin
       if not VarIsNull(RetData) then
         tmpStr := VarToStr(RetData);
   end
-  else if Pos(custno, strFZ) > 0 then
+  else if Pos(custno, g_fz {strFZ}) > 0 then
   begin
     if (SameText(custno, 'ACD39') and (Copy(oao06, 1, 1) = '4')) or (Copy(oao06, 1, 2) = 'PO') then
     begin
@@ -2374,6 +2334,30 @@ begin
 
   if not VarIsNull(Data) then
     Result := VarToStr(Data);
+end;
+
+procedure InitCustGroup;
+var
+  tmpSQL: string;
+  Data: OleVariant;
+  tmpCDS: TClientDataSet;
+begin
+  tmpSQL := 'exec proc_cust_group';
+  if QueryBySQL(tmpSQL, Data) then
+  begin
+    tmpCDS := TClientDataSet.Create(nil);
+    try
+      tmpCDS.Data := Data;
+      g_fz:=tmpcds.fieldbyname('fz').asstring;
+    finally
+      FreeAndNil(tmpCDS);
+    end;
+  end;
+end;
+
+function IsFz(custno:string):boolean;
+begin
+  result:=Pos(custno,g_fz)>0;
 end;
 
 //取水號,返回-1錯誤

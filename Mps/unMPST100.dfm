@@ -1,9 +1,9 @@
 inherited FrmMPST100: TFrmMPST100
-  Left = 3
-  Top = 2
+  Left = 250
+  Top = 120
   Caption = 'FrmMPST100'
-  ClientHeight = 454
-  ClientWidth = 636
+  ClientHeight = 804
+  ClientWidth = 1503
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
@@ -8431,7 +8431,7 @@ inherited FrmMPST100: TFrmMPST100
     TabOrder = 6
   end
   inherited ToolBar: TToolBar
-    Width = 636
+    Width = 1503
     ButtonWidth = 79
     TabOrder = 1
     inherited btn_query: TToolButton
@@ -8487,13 +8487,13 @@ inherited FrmMPST100: TFrmMPST100
     end
   end
   inherited Panel1: TPanel
-    Width = 636
+    Width = 1503
     TabOrder = 2
   end
   object PnlBottom: TPanel [23]
     Left = 0
-    Top = 424
-    Width = 636
+    Top = 774
+    Width = 1503
     Height = 30
     Align = alBottom
     BevelOuter = bvNone

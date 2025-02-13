@@ -40,8 +40,8 @@ inherited FrmDLII020_qrcode: TFrmDLII020_qrcode
     Caption = 'Label4'
   end
   inherited PnlRight: TPanel
-    Left = 474
-    Height = 372
+    Left = 482
+    Height = 383
     TabOrder = 5
   end
   object Edit1: TEdit [5]

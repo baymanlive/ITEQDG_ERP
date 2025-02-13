@@ -917,7 +917,8 @@ begin
     tmpDBType := 'ITEQDG'
   else
     tmpDBType := 'ITEQGZ';
-  tmpSQL := 'select * from mps015 where orderno=' + Quotedstr(CDS.FieldByName('orderno').AsString) + ' and orderitem=' + IntToStr(CDS.FieldByName('orderitem').AsInteger) + ' and bu=' + Quotedstr(tmpDBType);
+  tmpSQL := 'select * from mps015 where orderno=' + Quotedstr(CDS.FieldByName('orderno').AsString) + ' and orderitem=' +
+  IntToStr(CDS.FieldByName('orderitem').AsInteger) + ' and bu=' + Quotedstr(tmpDBType);
   if QueryBySQL(tmpSQL, Data) then
   begin
     tmpCDS := TClientDataSet.Create(nil);

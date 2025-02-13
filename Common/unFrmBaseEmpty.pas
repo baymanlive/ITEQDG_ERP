@@ -99,6 +99,7 @@ begin
   for i:=0 to Self.ComponentCount-1 do
   if Self.Components[i] is TDBGridEh then
     (Self.Components[i] as TDBGridEh).Columns.ScaleWidths(96,Screen.PixelsPerInch);
+  InitCustGroup;
 end;
 
 procedure TFrmBaseEmpty.FormKeyDown(Sender: TObject; var Key: Word;

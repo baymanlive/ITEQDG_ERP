@@ -127,7 +127,7 @@ begin
   end;
 
   //這些客戶無COC掃描資料,不給拋轉
-  if Pos(CDS1.FieldByName('custno').AsString,g_strSG+'/'+g_strSH+'/'+g_strFZ)>0 then
+  if Pos(CDS1.FieldByName('custno').AsString,g_strSG+'/'+g_strSH+'/'+g_FZ)>0 then
   begin
     tmpSQL:='select top 1 bu from dli040'
            +' where bu='+Quotedstr(g_UInfo^.BU)
@@ -144,7 +144,7 @@ begin
     end;
 
     //方正必須有二維碼
-    if Pos(CDS1.FieldByName('custno').AsString,g_strFZ)>0 then
+    if Pos(CDS1.FieldByName('custno').AsString,g_FZ)>0 then
     begin
       tmpSQL:='select top 1 bu from dli041'
              +' where bu='+Quotedstr(g_UInfo^.BU)
@@ -234,7 +234,7 @@ begin
   if qRet2 then
   begin
     //這些客戶同時拋轉COC批號
-    if Pos(CDS1.FieldByName('custno').AsString,g_strSG+'/'+g_strCD+'/'+g_strSH+'/'+g_strFZ)>0 then
+    if Pos(CDS1.FieldByName('custno').AsString,g_strSG+'/'+g_strCD+'/'+g_strSH+'/'+g_FZ)>0 then
     begin
       Data:=null;
       tmpSQL:='declare @sno int set @sno=0'
@@ -266,7 +266,7 @@ begin
       end;
 
       //方正同時拋轉二維碼
-      if Pos(CDS1.FieldByName('custno').AsString,g_strFZ)>0 then
+      if Pos(CDS1.FieldByName('custno').AsString,g_FZ)>0 then
       begin
         Data:=null;
         tmpSQL:='declare @sno int set @sno=0'

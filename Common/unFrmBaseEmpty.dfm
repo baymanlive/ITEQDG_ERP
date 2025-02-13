@@ -1,7 +1,7 @@
 object FrmBaseEmpty: TFrmBaseEmpty
   Left = 0
-  Top = 177
-  Width = 600
+  Top = 136
+  Width = 598
   Height = 364
   Caption = 'FrmBaseEmpty'
   Color = clBtnFace

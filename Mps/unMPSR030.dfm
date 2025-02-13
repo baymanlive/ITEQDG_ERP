@@ -1,6 +1,6 @@
 inherited FrmMPSR030: TFrmMPSR030
-  Left = 705
-  Top = 195
+  Left = 566
+  Top = 279
   Caption = 'FrmMPSR030'
   ClientHeight = 569
   ClientWidth = 1064
@@ -16,9 +16,10 @@ inherited FrmMPSR030: TFrmMPSR030
     object Label3: TLabel [4]
       Left = 255
       Top = 6
-      Width = 107
+      Width = 170
       Height = 16
-      Caption = #29983#29986#26085#26399'/'#37707#27425
+      AutoSize = False
+      Caption = #29983#29986#26085#26399'/'#37707#27425'/'#32317#37707#25976
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -16
@@ -27,7 +28,7 @@ inherited FrmMPSR030: TFrmMPSR030
       ParentFont = False
     end
     object Label4: TLabel [5]
-      Left = 515
+      Left = 696
       Top = 6
       Width = 34
       Height = 16
@@ -40,7 +41,7 @@ inherited FrmMPSR030: TFrmMPSR030
       ParentFont = False
     end
     object Edit3: TEdit
-      Left = 365
+      Left = 432
       Top = 3
       Width = 90
       Height = 24
@@ -55,7 +56,7 @@ inherited FrmMPSR030: TFrmMPSR030
       TabOrder = 2
     end
     object Edit4: TEdit
-      Left = 460
+      Left = 527
       Top = 3
       Width = 30
       Height = 24
@@ -71,7 +72,7 @@ inherited FrmMPSR030: TFrmMPSR030
       Text = '0'
     end
     object Edit5: TEdit
-      Left = 550
+      Left = 731
       Top = 3
       Width = 50
       Height = 24
@@ -87,7 +88,7 @@ inherited FrmMPSR030: TFrmMPSR030
       Text = '0'
     end
     object Edit6: TEdit
-      Left = 605
+      Left = 786
       Top = 3
       Width = 50
       Height = 24
@@ -101,6 +102,23 @@ inherited FrmMPSR030: TFrmMPSR030
       ParentFont = False
       TabOrder = 5
       Text = '0'
+    end
+    object edtStealSum: TEdit
+      Left = 561
+      Top = 3
+      Width = 30
+      Height = 24
+      TabStop = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = #26032#32048#26126#39636
+      Font.Style = [fsBold]
+      ParentColor = True
+      ParentFont = False
+      TabOrder = 6
+      Text = '0'
+      Visible = False
     end
   end
   inherited Panel1: TPanel

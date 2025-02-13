@@ -7,11 +7,11 @@ inherited FrmMPST100_setE: TFrmMPST100_setE
   PixelsPerInch = 96
   TextHeight = 13
   inherited ToolBar: TToolBar
-    Width = 838
+    Width = 830
   end
   inherited PnlBottom: TPanel
-    Top = 539
-    Width = 838
+    Top = 532
+    Width = 830
     object lblMPST100_setEmsg: TLabel [4]
       Tag = 1
       Left = 260
@@ -22,11 +22,11 @@ inherited FrmMPST100_setE: TFrmMPST100_setE
     end
   end
   inherited Panel1: TPanel
-    Width = 838
+    Width = 830
   end
   inherited DBGridEh1: TDBGridEh
-    Width = 838
-    Height = 495
+    Width = 830
+    Height = 488
     IncludeImageModules = [iimJpegImageModuleEh]
     DrawGraphicData = True
     DrawMemoText = True
@@ -74,7 +74,6 @@ inherited FrmMPST100_setE: TFrmMPST100_setE
         EditButtons = <>
         FieldName = 's7'
         Footers = <>
-        Visible = False
       end
       item
         DynProps = <>

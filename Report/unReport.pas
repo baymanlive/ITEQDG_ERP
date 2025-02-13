@@ -677,6 +677,9 @@ begin
           sub := '信息?業科';
           if Pos(sub, str) > 0 then
             str := StringReplace(str, sub,'信息產業科', [rfReplaceAll]);
+          sub := 'E178114';
+          if (Pos(sub,str)>0) and (Pos('超毅', Cbb.Text) = 0) and (Pos('Meet the HSF requirements that were signed by both parties',str)=0) then
+            str := StringReplace(str, sub,sub+'。符合雙方簽訂的環境管理物質要求。Meet the HSF requirements that were signed by both parties。', [rfReplaceAll]);
           sub := '廣東省東莞市虎門鎮北柵村南坊工業區東坊路57號';
           if Pos(sub, str) > 0 then
             str := StringReplace(str, sub,'中國廣東省東莞市虎門鎮北柵東坊路57號。', [rfReplaceAll]);

@@ -1,9 +1,9 @@
 inherited FrmSTDI041: TFrmSTDI041
-  Top = 16
+  Left = 285
+  Top = 51
   BorderStyle = bsNone
   Caption = 'FrmSTDI041'
   ClientHeight = 404
-  ClientWidth = 624
   OldCreateOrder = True
   WindowState = wsMaximized
   OnClose = FormClose
@@ -12,7 +12,7 @@ inherited FrmSTDI041: TFrmSTDI041
   object ToolBar: TToolBar [0]
     Left = 0
     Top = 0
-    Width = 624
+    Width = 590
     Height = 38
     AutoSize = True
     ButtonHeight = 36
@@ -106,7 +106,7 @@ inherited FrmSTDI041: TFrmSTDI041
   object PnlBottom: TPanel [1]
     Left = 0
     Top = 374
-    Width = 624
+    Width = 590
     Height = 30
     Align = alBottom
     BevelOuter = bvNone
@@ -164,7 +164,7 @@ inherited FrmSTDI041: TFrmSTDI041
   object Panel1: TPanel [2]
     Left = 0
     Top = 38
-    Width = 624
+    Width = 590
     Height = 6
     Align = alTop
     BevelOuter = bvNone
@@ -173,7 +173,7 @@ inherited FrmSTDI041: TFrmSTDI041
   object DBGridEh1: TDBGridEh [3]
     Left = 0
     Top = 44
-    Width = 624
+    Width = 590
     Height = 330
     Align = alClient
     DataSource = DS

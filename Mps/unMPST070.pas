@@ -83,6 +83,7 @@ type
     btn_mpst070Q: TToolButton;
     btn_mpst070CalPP: TBitBtn;
     btn_mpst070CalcPP: TBitBtn;
+    ToolButton1: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure RG1Click(Sender: TObject);
@@ -631,6 +632,7 @@ begin
     RG2.Width := RG1.Width;
     RG2.Height := RG1.Height;
   end;
+  PCL.ActivePageIndex:=0;
 end;
 
 procedure TFrmMPST070.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1081,7 +1083,7 @@ begin
         begin
           tmpCDS.FieldByName('Premark').AsString := Trim(tmpCDS.FieldByName('Premark').AsString + ' CAF-C');
         end;
-        if (Pos(UpperCase(tmpCDS.FieldByName('Machine').AsString), g_MachinePP_GZ) = 0) and (Pos(tmpCDS.FieldByName('Custno').AsString, 'AC434,AC114,AC365,AC388,AC091,AC117,AC094,AC449,AC172,AC330') > 0) then
+        if (Pos(UpperCase(tmpCDS.FieldByName('Machine').AsString), g_MachinePP_GZ) = 0) and (Pos(tmpCDS.FieldByName('Custno').AsString, 'AC434,AC114,ACG16,AC365,AC388,AC091,AC117,AC094,AC449,AC172,AC330') > 0) then
         begin
           if Length(tmpCDS.FieldByName('Premark').AsString) = 0 then
             tmpCDS.FieldByName('Premark').AsString := CheckLang(gzOrder)
@@ -1109,6 +1111,7 @@ begin
 
       post_bo := CDSPost(tmpCDS, p_TableName);
       UdpJitem(tmpSimuver);
+
     finally
       l_Ans := False;
       ProgressBar1.Visible := False;
@@ -1123,6 +1126,7 @@ begin
     CDS.EmptyDataSet;
     CDS2.EmptyDataSet;
     CDS3.EmptyDataSet;
+    PostBySQL('exec proc_mpst070_custno2_update');
     SetEdit3;
     l_OptLockAns := False;
     l_LockAns := False;

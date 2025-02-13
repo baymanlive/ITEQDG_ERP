@@ -1,6 +1,6 @@
 inherited FrmDLII020: TFrmDLII020
   Left = 306
-  Top = 98
+  Top = 99
   Caption = 'FrmDLII020'
   ClientHeight = 735
   ClientWidth = 1283

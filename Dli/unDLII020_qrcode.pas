@@ -418,7 +418,7 @@ begin
   Edit3.Top := Memo1.Top;
 
   //下列客戶取coc批號
-  l_Custno := g_strJS + 'AC148/ACE71/AC192/ACD05/AC552/AH027/AC436/AC204/AC051/ACE22/AC100/AC101/ACD36/AC096/AC178/AC152/AH036/ACA00/N024/' + g_strSN + '/'
+  l_Custno := g_strJS + 'AC148/ACE71/AC192/ACD05/AC552/AH027/AC436/AC204/AC051/ACE22/AC100/AC101/ACD36/AC096/AC178/AC152/AH036/ACA00/N024/N006/' + g_strSN + '/'
     + g_strSH + '/' + g_strSY + '/' + g_strSG + '/' + g_strHT + '/' + g_strMR + '/' + g_strLN + '/' + g_strAC052_AC071 +
     '/' + g_strZJ + '/' + g_strZF + '/' + g_strCD + '/' + g_strCY + '/' + g_strJLS + '/' + g_strMW + '/' + g_strTL;
 
@@ -630,7 +630,7 @@ begin
 
 
       //三廣、生益、崇達、深南、華通、依頓、美維、美銳、聯能、廣州依利安達,微通科技、中京、中富、超毅一個批號一筆
-      if l_isSG or (Pos(OraCDS.FieldByName('oea04').AsString, '/ACA00/N024/' + g_strSY + '/' + g_strMY + '/' + g_strCD +
+      if l_isSG or (Pos(OraCDS.FieldByName('oea04').AsString, '/ACA00/N024/N006/' + g_strSY + '/' + g_strMY + '/' + g_strCD +
         '/' + g_strSN + '/' + g_strHT + '/' + g_strYD + '/' + g_strMW + '/' + g_strMR + '/' + g_strLN + '/' +
         g_strAC052_AC071 + '/' + g_strZJ + '/' + g_strZF + '/' + g_strCY + '/' + g_strJLS) > 0) then
       begin
@@ -1060,7 +1060,8 @@ begin
   else if Pos(l_CDS.FieldByName('Custno').AsString, g_strSL) > 0 then  //深聯
     Result := SL_QRCode(xImgPath, xKB)
   else if (Pos(l_CDS.FieldByName('Custno').AsString, g_strJW) > 0) or SameText(l_CDS.FieldByName('Custno').AsString,
-    'N024') then  //深圳景旺
+    'N024')or SameText(l_CDS.FieldByName('Custno').AsString,
+    'N006') then  //深圳景旺
     Result := JW_QRCode(xImgPath, xKB)
   else if Pos(l_CDS.FieldByName('Custno').AsString, g_strCD) > 0 then  //崇達
     Result := CD_QRCode(xImgPath, xKB)

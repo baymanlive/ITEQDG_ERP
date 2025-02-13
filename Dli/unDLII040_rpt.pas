@@ -74,6 +74,7 @@ const
     + '<FIELD attrname="D1X" fieldtype="string" WIDTH="100"/>'   //檢查用
     + '<FIELD attrname="D1_1" fieldtype="string" WIDTH="100"/>'  //-公差(數字無符號)
     + '<FIELD attrname="D1_2" fieldtype="string" WIDTH="100"/>'  //+公差(數字無符號)
+    + '<FIELD attrname="D1_3" fieldtype="string" WIDTH="100"/>'  //公差
     + '<FIELD attrname="D1" fieldtype="string" WIDTH="100"/>' + '<FIELD attrname="D11" fieldtype="string" WIDTH="100"/>'
     + '<FIELD attrname="E1" fieldtype="string" WIDTH="100"/>' + '<FIELD attrname="E11" fieldtype="string" WIDTH="100"/>'
     + '<FIELD attrname="E2" fieldtype="string" WIDTH="100"/>' + '<FIELD attrname="E21" fieldtype="string" WIDTH="100"/>'
@@ -647,7 +648,10 @@ begin
   if Pos('class', LowerCase(FCDS.FieldByName('C1').AsString)) > 0 then
   begin
     //D1=C1
-    tmpSQL := RightStr('0000' + FloatToStr(SMRec.M3_6 * 10), 4);
+//    if pos(SMRec.Custno,'AC075,AC311,AC310,AC405,AC950')>0 then   //20241128
+//      tmpSQL := RightStr('0000' + FloatToStr(thickness * 10), 4)
+//    else
+      tmpSQL := RightStr('0000' + FloatToStr(SMRec.M3_6 * 10), 4);
     tmpSQL := 'Select ClassB,ClassC,0 as id From DLI090' + ' Where Bu=' + Quotedstr(g_UInfo^.BU) + ' And Strip_lower<='
       + Quotedstr(tmpSQL) + ' And Strip_upper>=' + Quotedstr(tmpSQL) + ' And charindex(' + Quotedstr(SMRec.Custno) +
       ',Custno)>0' + ' And charindex(' + Quotedstr(SMRec.M2) + ',Adhesive)>0' + ' Union All' +
@@ -1189,11 +1193,11 @@ begin
       ('oao06').AsString);
 
     FCDS.FieldByName('C_Pno').AsString := tmpCDS.FieldByName('oeb11').AsString;
-    if copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'JX-' then
+    if (copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'JX-') or (copy(tmpCDS.FieldByName('oao06').AsString, 1, 3) = 'WX-') then
     begin
       GetJxTA_oeb10(tmpCDS.FieldByName('oao06').AsString, FCDS.FieldByName('C_Sizes'));
       FCDS.FieldByName('C_Pno').AsString := FSourceCDS.FieldByName('Custprono').AsString;
-      if (ds3 <> nil) and (pos(SMRec.Custno, 'AC434/AC365/ACD39/AC388/AC111,AC082,AC108,ACF29') > 0) then
+      if (ds3 <> nil) and (pos(SMRec.Custno, g_fz+'AC111,AC082,AC108,') > 0) then
       begin
         flag := false;
         ds3.first;
@@ -1284,7 +1288,7 @@ begin
       SMRec.M12_14 := Copy(tmpPno, 12, 3);
     end;
     SMRec.M15 := Copy(tmpPno, 15, 1);
-    SMRec.MLast_1 := Copy(tmpPno, 16, 1);              //M16
+    SMRec.MLast_1 := Copy(tmpPno, Length(tmpPno)-1, 1);//Copy(tmpPno, 16, 1);              //M16     //
     SMRec.MLast := RightStr(tmpPno, 1);               //M17
     if (SMRec.M2 = '8') and SameText(SMRec.MLast, 'R') then
       SMRec.M2 := 'F';
@@ -1298,7 +1302,7 @@ begin
     isSN := Pos(SMRec.Custno, 'AC111') > 0; //深南
     is968 := SameText(SMRec.M2, 'X');
 
-    if ((Pos(SMRec.Custno, 'AC114/AC365/AC388/AC434') > 0) and (SMRec.M3_6 = 2) and (SMRec.M2 = 'E')) or
+    if ((Pos(SMRec.Custno, g_fz{'AC114/AC365/AC388/AC434/ACG16'}) > 0) and (SMRec.M3_6 = 2) and (SMRec.M2 = 'E')) or
       //方正Hi-pot測試
       (SameText(SMRec.Custno, 'AC084') and (SMRec.M2 = '5') and (SMRec.M3_6 <= 3))      //生益Hi-pot測試
       then
@@ -1667,7 +1671,7 @@ begin
     end;
     {end計算銅箔}
     //方正集團
-    if (Pos(SMRec.Custno, 'AC114/AC365/AC434/AC388') > 0) and (SMRec.M3_6 <= 4) then
+    if (Pos(SMRec.Custno, 'AC114/AC365/AC434/AC388ACG16') > 0) and (SMRec.M3_6 <= 4) then
     begin
       FCDS.FieldByName('C1').AsString := '±0.4mil';
       FCDS.FieldByName('D1').AsString := '±0.4mil';
@@ -2920,7 +2924,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
       FCDS.FieldByName('Cl_visible').AsString := '0';
     //氯溴
     //STS
-    if ((POS(SMRec.Custno, 'AC093/AM010') > 0) and (Pos(SMRec.M2, '4/8') > 0)) or (isHY and SameText(SMRec.M2, '6'))
+    if ((POS(SMRec.Custno, 'AC093/AM010') > 0)  and (Pos(SMRec.M2, '4/8') > 0)) or (isHY and SameText(SMRec.M2, '6') and(SMRec.Custno<>'AC152'))
       then
       FCDS.FieldByName('STS_visible').AsString := '1'
     else
@@ -3033,7 +3037,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
         if pos1 > 0 then
           FCDS.FieldByName('PP').AsString := copy(FCDS.FieldByName('PP').AsString, 1, pos1 - 1);
       end;
-      if (Pos(SMRec.Custno2, 'ACD39,AC365,AC388,AC434') > 0) then  //方正不顯示銅箔 20221117  胡美香
+      if (Pos(SMRec.Custno2,g_fz{ 'ACD39,AC365,AC388,AC434'}) > 0) then  //方正不顯示銅箔 20221117  胡美香
       begin
         FCDS.FieldByName('Copper').AsString := '';
       end;
@@ -3102,8 +3106,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
     //備註typeS
     //COC檢驗員
     Data := null;
-    tmpSQL := 'Select Top 1 UserName From Sys_PDAUser' + ' Where Bu=' + Quotedstr(g_UInfo^.BU) + ' And UserId=' +
-      Quotedstr(FSourceCDS.FieldByName('Coc_user').AsString) + ' Order By Not_use,UserId';
+    tmpSQL := 'Select Top 1 UserName From Sys_PDAUser' + ' Where Bu=' + Quotedstr(g_UInfo^.BU) + ' And UserId=' + Quotedstr(FSourceCDS.FieldByName('Coc_user').AsString) + ' Order By Not_use,UserId';
     if QueryOneCR(tmpSQL, Data) then
     begin
       if not VarIsNull(Data) then
@@ -3140,7 +3143,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
       tmpTBXD := GetTBXD(SMRec, False); //銅箔限定(所有custno=@)
     tmpBBXD := GetBBXD(SMRec, FCDS.FieldByName('N1').AsString); //N1 結構
     //方正集團+耐電壓測試報告,條件:膠系6FJ或U+X3z、6mil以下(不含)、HOZ~6OZ、2張結構
-    isFZ := (Pos(SMRec.Custno, 'ACD39,AC365,AC388,AC434') > 0) and (SMRec.M3_6 <= 6) and ((Pos(SMRec.M7, l_CopperALL) >=
+    isFZ := (Pos(SMRec.Custno,g_fz{ 'ACD39,AC365,AC388,AC434'}) > 0) and (SMRec.M3_6 <= 6) and ((Pos(SMRec.M7, l_CopperALL) >=
       3) or (Pos(SMRec.M8, l_CopperALL) >= 3)) and ((Pos(SMRec.M7, l_CopperALL) <= 13) or (Pos(SMRec.M8, l_CopperALL) <=
       13)) and (Pos('*2', FCDS.FieldByName('N1').AsString) > 0) and (Pos('+', FCDS.FieldByName('N1').AsString) = 0);
 //    if isFZ then              //AC114
@@ -3307,6 +3310,12 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
 
     if LeftStr(tmpLot1, 1) = ',' then
       Delete(tmpLot1, 1, 1);
+
+    if leftstr(tmpLot1, 1) = 'J' then
+    begin
+      FCDS.edit;
+      FCDS.FieldByName('TestName').AsString := '彭淑蘭';
+    end;
 
     with FCDSLot do
     begin
@@ -3501,7 +3510,7 @@ if GetClassB_C(SMRec, FCDS.FieldByName('C_Sizes').AsString) then
 
   begin
     {(*}
-    if (Pos(tmpCustno, 'AC365/AC388/AC434/ACD39/ACF29') > 0) and
+    if (Pos(tmpCustno,g_fz{ 'AC365/AC388/AC434/ACD39/ACF29'}) > 0) and
        (Pos('能源板',FCDS.FieldByName('C_Sizes').AsString) >0) and
        ((copy(FCDS.FieldByName('Pno').AsString,2,1) <> 'Q') or
        (copy(FCDS.FieldByName('Pno').AsString,length(FCDS.FieldByName('Pno').AsString),1) <> 'R'))
@@ -3738,13 +3747,15 @@ begin           //OAO06 SAMPLE:JX-223-220061-6-ACC58
     end;
     tmpSql :=
       'select ta_oeb10,oea10,ta_oeb28 from iteqjx.oeb_file join iteqjx.oea_file on oea01=oeb01 where oeb01=%s and oeb03=%s';
+    if ls[0]='WX' then
+      tmpsql:=StringReplace(tmpSql,'iteqjx.','iteqwx.',[rfReplaceAll]);
     tmpSql := Format(tmpSql, [quotedstr(ls[1] + '-' + ls[2]), ls[3]]);
     result := QueryBySQL(tmpSql, data, 'ORACLE');
     if result then
     begin
       tmpCDS.data := data;
       ta_oeb10.asstring := tmpCDS.Fields[0].asstring;
-      if pos(ls[4], 'AC114/AC365/AC388/AC434/ACD39/ACF29') > 0 then
+      if pos(ls[4], g_fz{'AC114/AC365/AC388/AC434/ACD39/ACF29'}) > 0 then
         ta_oeb10.DataSet.FieldByName('C_Orderno').asstring := tmpCDS.Fields[2].asstring
       else
         ta_oeb10.DataSet.FieldByName('C_Orderno').asstring := tmpCDS.Fields[1].asstring;

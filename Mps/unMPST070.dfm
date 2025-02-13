@@ -17,6 +17,12 @@ inherited FrmMPST070: TFrmMPST070
       ImageIndex = 58
       OnClick = btn_mpst070QClick
     end
+    object ToolButton1: TToolButton
+      Left = 683
+      Top = 0
+      Caption = 'ToolButton1'
+      ImageIndex = 58
+    end
   end
   inherited PnlBottom: TPanel
     Top = 715
@@ -81,7 +87,6 @@ inherited FrmMPST070: TFrmMPST070
   inherited PCL: TPageControl
     Width = 1296
     Height = 671
-    ActivePage = TabSheet2
     OnChange = PCLChange
     inherited TabSheet1: TTabSheet
       Caption = #24050#30906#35469#25490#31243

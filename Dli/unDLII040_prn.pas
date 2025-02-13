@@ -334,6 +334,8 @@ begin
           else
           begin
             str1 := FloatToStr(l_thickness) + '±' + FloatToStr(l_diff);
+            DS.DataSet.Edit;
+            DS.DataSet.FieldByName('D1_3').AsString:=str1;
             if (num1 <= l_thickness - l_diff) or (num2 >= l_thickness + l_diff) then
               tmpMsg := tmpMsg + '測試值不在規格要求範圍內:' + str1 + l_enter;
           end;

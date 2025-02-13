@@ -56,6 +56,10 @@ type
     CDS8: TClientDataSet;
     DS8: TDataSource;
     btn_dlii620: TToolButton;
+    dlii620_ts8: TTabSheet;
+    DBGridEh9: TDBGridEh;
+    CDS9: TClientDataSet;
+    DS9: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure CDSBeforePost(DataSet: TDataSet);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -94,6 +98,7 @@ type
     procedure btn_nextClick(Sender: TObject);
     procedure btn_lastClick(Sender: TObject);
     procedure btn_dlii620Click(Sender: TObject);
+    procedure CDS9BeforePost(DataSet: TDataSet);
   private
     { Private declarations }
     function BeforePost(DataSet: TDataSet; grd:TDBGridEh):Boolean;
@@ -150,6 +155,7 @@ begin
     CDS6.Data:=Data;
     CDS7.Data:=Data;
     CDS8.Data:=Data;
+    CDS9.Data:=Data;
     Exit;
   end;
 
@@ -182,6 +188,11 @@ begin
   if not QueryBySQL(GetSQL(7), Data) then
      Exit;
   CDS8.Data:=Data;
+
+  Data:=null;
+  if not QueryBySQL(GetSQL(8), Data) then
+     Exit;
+  CDS9.Data:=Data;
 end;
 
 procedure TFrmDLII620.FormCreate(Sender: TObject);
@@ -195,7 +206,7 @@ begin
   btn_dlii620.Left:=btn_quit.Left;
   
   inherited;
-  
+
   TabSheet1.Caption:=CheckLang('²Ä2½X');
   RefreshOthDS(0);
   SetGrdCaption(DBGridEh4,'DLI620');
@@ -216,10 +227,12 @@ begin
   for i:=0 to DBGridEh4.Columns.Count-1 do
   begin
     DBGridEh6.FieldColumns[DBGridEh4.Columns[i].FieldName].Title.Caption:=DBGridEh4.Columns[i].Title.Caption;
-
     DBGridEh6.FieldColumns[DBGridEh4.Columns[i].FieldName].Width:=DBGridEh4.Columns[i].Width;
+    DBGridEh9.FieldColumns[DBGridEh4.Columns[i].FieldName].Title.Caption:=DBGridEh4.Columns[i].Title.Caption;
+    DBGridEh9.FieldColumns[DBGridEh4.Columns[i].FieldName].Width:=DBGridEh4.Columns[i].Width;
   end;
   DBGridEh2.FieldColumns['lstcode'].Title.Caption:=CheckLang('­Ë¼Æ²Ä2½X');
+  PCL.ActivePageIndex :=0;
 end;
 
 procedure TFrmDLII620.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -232,6 +245,7 @@ begin
   CDS6.Active:=False;
   CDS7.Active:=False;
   CDS8.Active:=False;
+  CDS9.Active:=False;
   DBGridEh2.Free;
   DBGridEh3.Free;
   DBGridEh4.Free;
@@ -239,6 +253,7 @@ begin
   DBGridEh6.Free;
   DBGridEh7.Free;
   DBGridEh8.Free;
+  DBGridEh9.Free;
 end;
 
 function TFrmDLII620.BeforePost(DataSet: TDataSet; grd:TDBGridEh):Boolean;
@@ -345,10 +360,11 @@ begin
     1:tmpCDS:=CDS2;
     2:tmpCDS:=CDS3;
     3:tmpCDS:=CDS4;
-    4:tmpCDS:=CDS5;
-    5:tmpCDS:=CDS6;
-    6:tmpCDS:=CDS7;
-    7:tmpCDS:=CDS8;
+    4:tmpCDS:=CDS9;
+    5:tmpCDS:=CDS5;
+    6:tmpCDS:=CDS6;
+    7:tmpCDS:=CDS7;
+    8:tmpCDS:=CDS8;
   end;
 
   N201.Visible:=tmpCDS.Active and g_MInfo^.R_edit;
@@ -384,10 +400,11 @@ begin
     1:CDS2.Append;
     2:CDS3.Append;
     3:CDS4.Append;
-    4:CDS5.Append;
-    5:CDS6.Append;
-    6:CDS7.Append;
-    7:CDS8.Append;
+    4:CDS9.Append;
+    5:CDS5.Append;
+    6:CDS6.Append;
+    7:CDS7.Append;
+    8:CDS8.Append;
   end;
 end;
 
@@ -414,21 +431,26 @@ begin
            CDS4.CancelUpdates;
       end;
     4:begin
+        CDS9.Delete;
+        if not CDSPost(CDS9, p_TableName) then
+           CDS9.CancelUpdates;
+      end;
+    5:begin
         CDS5.Delete;
         if not CDSPost(CDS5, p_TableName) then
            CDS5.CancelUpdates;
       end;
-    5:begin
+    6:begin
         CDS6.Delete;
         if not CDSPost(CDS6, p_TableName) then
            CDS6.CancelUpdates;
       end;
-    6:begin
+    7:begin
         CDS7.Delete;
         if not CDSPost(CDS7, p_TableName) then
            CDS7.CancelUpdates;
       end;
-    7:begin
+    8:begin
         CDS8.Delete;
         if not CDSPost(CDS8, p_TableName) then
            CDS8.CancelUpdates;
@@ -443,10 +465,11 @@ begin
     1:CDS2.Edit;
     2:CDS3.Edit;
     3:CDS4.Edit;
-    4:CDS5.Edit;
-    5:CDS6.Edit;
-    6:CDS7.Edit;
-    7:CDS8.Edit;
+    4:CDS9.Edit;
+    5:CDS5.Edit;
+    6:CDS6.Edit;
+    7:CDS7.Edit;
+    8:CDS8.Edit;
   end;
 end;
 
@@ -457,10 +480,11 @@ begin
     1:if CDS2.State in [dsInsert,dsEdit] then CDS2.Post;
     2:if CDS3.State in [dsInsert,dsEdit] then CDS3.Post;
     3:if CDS4.State in [dsInsert,dsEdit] then CDS4.Post;
-    4:if CDS5.State in [dsInsert,dsEdit] then CDS5.Post;
-    5:if CDS6.State in [dsInsert,dsEdit] then CDS6.Post;
-    6:if CDS7.State in [dsInsert,dsEdit] then CDS7.Post;
-    7:if CDS8.State in [dsInsert,dsEdit] then CDS8.Post;
+    4:if CDS9.State in [dsInsert,dsEdit] then CDS9.Post;
+    5:if CDS5.State in [dsInsert,dsEdit] then CDS5.Post;
+    6:if CDS6.State in [dsInsert,dsEdit] then CDS6.Post;
+    7:if CDS7.State in [dsInsert,dsEdit] then CDS7.Post;
+    8:if CDS8.State in [dsInsert,dsEdit] then CDS8.Post;
   end;
 end;
 
@@ -471,10 +495,11 @@ begin
     1:if CDS2.State in [dsInsert,dsEdit] then CDS2.Cancel;
     2:if CDS3.State in [dsInsert,dsEdit] then CDS3.Cancel;
     3:if CDS4.State in [dsInsert,dsEdit] then CDS4.Cancel;
-    4:if CDS5.State in [dsInsert,dsEdit] then CDS5.Cancel;
-    5:if CDS6.State in [dsInsert,dsEdit] then CDS6.Cancel;
-    6:if CDS7.State in [dsInsert,dsEdit] then CDS7.Cancel;
-    7:if CDS8.State in [dsInsert,dsEdit] then CDS8.Cancel;
+    4:if CDS9.State in [dsInsert,dsEdit] then CDS9.Cancel;
+    5:if CDS5.State in [dsInsert,dsEdit] then CDS5.Cancel;
+    6:if CDS6.State in [dsInsert,dsEdit] then CDS6.Cancel;
+    7:if CDS7.State in [dsInsert,dsEdit] then CDS7.Cancel;
+    8:if CDS8.State in [dsInsert,dsEdit] then CDS8.Cancel;
   end;
 end;
 
@@ -494,10 +519,11 @@ begin
     1:DataSet.FieldByName('CodeId').AsInteger:=1;
     2:DataSet.FieldByName('CodeId').AsInteger:=2;
     3:DataSet.FieldByName('CodeId').AsInteger:=3;
-    4:DataSet.FieldByName('CodeId').AsInteger:=4;
-    5:DataSet.FieldByName('CodeId').AsInteger:=5;
-    6:DataSet.FieldByName('CodeId').AsInteger:=6;
-    7:DataSet.FieldByName('CodeId').AsInteger:=7;
+    4:DataSet.FieldByName('CodeId').AsInteger:=8;
+    5:DataSet.FieldByName('CodeId').AsInteger:=4;
+    6:DataSet.FieldByName('CodeId').AsInteger:=5;
+    7:DataSet.FieldByName('CodeId').AsInteger:=6;
+    8:DataSet.FieldByName('CodeId').AsInteger:=7;
   end;
 end;
 
@@ -554,10 +580,11 @@ begin
     1:GetExportXls(CDS2, p_TableName);
     2:GetExportXls(CDS3, p_TableName);
     3:GetExportXls(CDS4, p_TableName);
-    4:GetExportXls(CDS5, p_TableName);
-    5:GetExportXls(CDS6, p_TableName);
-    6:GetExportXls(CDS7, p_TableName);
-    7:GetExportXls(CDS8, p_TableName);
+    4:GetExportXls(CDS9, p_TableName);
+    5:GetExportXls(CDS5, p_TableName);
+    6:GetExportXls(CDS6, p_TableName);
+    7:GetExportXls(CDS7, p_TableName);
+    8:GetExportXls(CDS8, p_TableName);
   end;
 end;
 
@@ -640,6 +667,13 @@ begin
   if not Assigned(FrmDLII620_set) then
      FrmDLII620_set:=TFrmDLII620_set.Create(Application);
   FrmDLII620_set.ShowModal;
+end;
+
+procedure TFrmDLII620.CDS9BeforePost(DataSet: TDataSet);
+begin
+  inherited;
+  if not BeforePost(DataSet, DBGridEh9) then
+     Abort;
 end;
 
 end.

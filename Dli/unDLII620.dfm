@@ -1,8 +1,13 @@
 inherited FrmDLII620: TFrmDLII620
+  Left = 407
+  Top = 195
   Caption = 'FrmDLII620'
+  ClientHeight = 667
+  ClientWidth = 1106
   PixelsPerInch = 96
   TextHeight = 13
   inherited ToolBar: TToolBar
+    Width = 1106
     object btn_dlii620: TToolButton
       Left = 594
       Top = 0
@@ -12,10 +17,21 @@ inherited FrmDLII620: TFrmDLII620
       OnClick = btn_dlii620Click
     end
   end
+  inherited PnlBottom: TPanel
+    Top = 637
+    Width = 1106
+  end
+  inherited Panel1: TPanel
+    Width = 1106
+  end
   inherited PCL: TPageControl
+    Width = 1106
+    Height = 593
     inherited TabSheet1: TTabSheet
       Caption = 'CCL'#31532'2'#30908
       inherited DBGridEh1: TDBGridEh
+        Width = 1098
+        Height = 565
         Columns = <
           item
             DynProps = <>
@@ -49,8 +65,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh2: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 1098
+        Height = 565
         Align = alClient
         DataSource = DS2
         DynProps = <>
@@ -96,8 +112,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh3: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 1098
+        Height = 565
         Align = alClient
         DataSource = DS3
         DynProps = <>
@@ -143,10 +159,69 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh4: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 1098
+        Height = 565
         Align = alClient
         DataSource = DS4
+        DynProps = <>
+        FooterParams.Color = clWindow
+        GridLineParams.VertEmptySpaceStyle = dessNonEh
+        IndicatorOptions = [gioShowRowIndicatorEh, gioShowRecNoEh]
+        Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghShowRecNo, dghColumnResize, dghColumnMove]
+        PopupMenu = PopupMenu1
+        TabOrder = 0
+        Columns = <
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'Custno'
+            Footers = <>
+          end
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'Code'
+            Footers = <>
+          end
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'LstCode'
+            Footers = <>
+          end
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'StdValue'
+            Footers = <>
+          end
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'StdValueNo'
+            Footers = <>
+          end
+          item
+            DynProps = <>
+            EditButtons = <>
+            FieldName = 'StdValueOne'
+            Footers = <>
+          end>
+        object RowDetailData: TRowDetailPanelControlEh
+        end
+      end
+    end
+    object dlii620_ts8: TTabSheet
+      Caption = 'CCL'#31532'18'#30908
+      ImageIndex = 8
+      object DBGridEh9: TDBGridEh
+        Left = 0
+        Top = 0
+        Width = 1098
+        Height = 565
+        Align = alClient
+        DataSource = DS9
         DynProps = <>
         FooterParams.Color = clWindow
         GridLineParams.VertEmptySpaceStyle = dessNonEh
@@ -202,8 +277,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh5: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 962
+        Height = 565
         Align = alClient
         DataSource = DS5
         DynProps = <>
@@ -251,8 +326,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh6: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 1098
+        Height = 565
         Align = alClient
         DataSource = DS6
         DynProps = <>
@@ -310,8 +385,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh7: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 962
+        Height = 565
         Align = alClient
         DataSource = DS7
         DynProps = <>
@@ -359,8 +434,8 @@ inherited FrmDLII620: TFrmDLII620
       object DBGridEh8: TDBGridEh
         Left = 0
         Top = 0
-        Width = 955
-        Height = 423
+        Width = 962
+        Height = 565
         Align = alClient
         DataSource = DS8
         DynProps = <>
@@ -550,5 +625,22 @@ inherited FrmDLII620: TFrmDLII620
     DataSet = CDS8
     Left = 570
     Top = 341
+  end
+  object CDS9: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    BeforeInsert = CDS2BeforeInsert
+    BeforeEdit = CDS2BeforeEdit
+    AfterEdit = CDS2AfterEdit
+    BeforePost = CDS9BeforePost
+    AfterPost = CDS2AfterPost
+    OnNewRecord = CDS2NewRecord
+    Left = 541
+    Top = 373
+  end
+  object DS9: TDataSource
+    DataSet = CDS9
+    Left = 570
+    Top = 373
   end
 end

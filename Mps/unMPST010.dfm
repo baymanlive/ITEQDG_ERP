@@ -117,7 +117,6 @@ inherited FrmMPST010: TFrmMPST010
   inherited PCL: TPageControl
     Width = 1366
     Height = 643
-    ActivePage = TabSheet2
     OnChange = PCLChange
     inherited TabSheet1: TTabSheet
       Caption = #24050#30906#35469#25490#31243
